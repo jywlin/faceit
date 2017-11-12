@@ -41,17 +41,6 @@ skinstatus
 	
 }
 
-function renderStartDetect() {
-	return `
-		<h1>Are you pretty, ugly, or pretty ugly :)</h1>
-		<h2>Upload a selfie for analysis!</h2>	
-		<form action="#" class="image-url">
-			<label for="url"></label>	
-			<input type="text" class="url">
-			<button type="submit">Upload</button>
-		</form>	
-	`;
-}
 
 function renderDetectResult(result) {
 	//const genderScore = gender.toLowerCase()+"_score";
@@ -136,14 +125,11 @@ function renderRestartButton() {
 	return `
 		<h2>Restart</h2>	
 		<label for="restart"></label>	
-		<button type="submit">Restart</button>	
+		<button class="js-restart-button" type="submit">Restart</button>	
 	`;
 }
 
-function displayStartDetect() {
-	const startDetect = renderStartDetect();
-	$('.face-detect').html(startDetect);
-}
+
 
 //Displaying face detection data from Face++ API
 //Dimension variables calculated based on original image are updated to reflect displayed (resized) image dimension 
@@ -212,26 +198,54 @@ function displayFaceCompareData(data) {
 }
 */
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function renderInit() {
+	return `
+		<h1>Are you pretty, ugly, or pretty ugly :)</h1>
+		<h2>Upload a selfie for analysis!</h2>	
+		<form action="#" class="image-url">
+			<label for="url"></label>	
+			<input type="text" class="url">
+			<button type="submit">Upload</button>
+		</form>	
+	`;
+}
+
+function displayInit() {
+	const init = renderInit();
+	$('.face-detect').html(init);
+	$('.face-detect-results').html('');
+	$('.face-compare').html('');
+	$('.face-restart').html('');
+	uploadDetect();
+}
 
 //Upload event triggered when user click upload button to input an image URL
-function watchUpload() {
-	//console.log(`watchSubmit running~`);
-	displayStartDetect();
-
+function uploadDetect() {
 	$('.image-url').submit(event => {
 		console.log(`Uploading!`);
 		event.preventDefault();
-		const uploadTarget = $(this).find('.url');
-		IMAGE_URL = uploadTarget.val();
-		uploadTarget.val("");
+		IMAGE_URL = $('.url').val();
+		console.log(IMAGE_URL);
+		
+		$('.url').val("");
 		postDetectData(IMAGE_URL, displayFaceDetectData);
 		//Calling the function second time to fully load resized image dimension 
 		//landmarkBox needs the updated resized image dimension for correct dimension and positioning 
 		postDetectData(IMAGE_URL, displayFaceDetectData);
 	});
-
-//  postCompareData(displayFaceCompareData);
-
 }
 
-$(watchUpload);
+function restartDetect() {
+	$('.face-restart').on('click', '.js-restart-button', event => {
+		IMAGE_URL = "";
+		displayInit();
+	});
+}
+
+function initApp() {
+	displayInit();
+	restartDetect();
+}
+
+$(initApp);
