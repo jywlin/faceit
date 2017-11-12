@@ -5,9 +5,9 @@
 }
 
 .handle-img {
-
+	height: 510px;
 /*	float: left;*/
-	
+	/*border: 1px solid black;	*/
 }
 
 .handle-img .img-box {
@@ -19,7 +19,7 @@
     position: relative;
     overflow: hidden;
     white-space: nowrap;
-    margin: 1em 0;
+/*    margin: 1em 0;*/
 }
 
 .helper {
@@ -77,10 +77,10 @@ img {
 }
 
 .face-details {
-	width: 500px;
-	height: 300px;
+	width: 700px;
+	height: 130px;
 	display: inline-block;
-	border: 1px black solid;
+	/*border: 1px black solid;*/
     margin: 1em 0;
 }
 
@@ -107,5 +107,11 @@ img {
 	margin-left: auto;
 	margin-right: auto;
 	line-height: 5px;
+}
+
+
+.face-compare, .face-restart {
+	display: inline-block;
+	margin-right: 50px;
 }
 

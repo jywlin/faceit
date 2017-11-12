@@ -41,7 +41,19 @@ skinstatus
 	
 }
 
-function renderResult(result) {
+function renderStartDetect() {
+	return `
+		<h1>Are you pretty, ugly, or pretty ugly :)</h1>
+		<h2>Upload a selfie for analysis!</h2>	
+		<form action="#" class="image-url">
+			<label for="url"></label>	
+			<input type="text" class="url">
+			<button type="submit">Upload</button>
+		</form>	
+	`;
+}
+
+function renderDetectResult(result) {
 	//const genderScore = gender.toLowerCase()+"_score";
 	//const beauty = result.faces[0].attributes.beauty.genderScore;
 
@@ -73,8 +85,6 @@ function renderResult(result) {
 	const getEmotion = sortEmotions[0][0];
 	const getSkin = sortSkins[0][0];
 		
-
-
 	return `
 		<div class="handle-img">
 			<div class="img-box">
@@ -107,26 +117,52 @@ function renderResult(result) {
 				<h3 class="face-title">${getSkin}</h3>
 				<span class="face-text">Skin</span>
 			</div>
-		</div>	
-		<div class="description">
-				<span><h4></h4></span>
-				<span></span>
 		</div>
 	`;
+}
 
-				
+function renderCompareUpload() {
+	return `
+		<h2>Compare another face!</h2>	
+		<form action="#" class="compare-img-url">
+			<label for="compare-url"></label>	
+			<input type="text" class="compare-url">
+			<button type="submit">Upload</button>
+		</form>
+	`;
+}
 
+function renderRestartButton() {
+	return `
+		<h2>Restart</h2>	
+		<label for="restart"></label>	
+		<button type="submit">Restart</button>	
+	`;
+}
+
+function displayStartDetect() {
+	const startDetect = renderStartDetect();
+	$('.face-detect').html(startDetect);
 }
 
 //Displaying face detection data from Face++ API
 //Dimension variables calculated based on original image are updated to reflect displayed (resized) image dimension 
 function displayFaceDetectData(data) {
 	//console.log(data.faces[0].attributes.headpose.roll_angle);
-	//const results = data.items.map((item, index) => renderResult(item));
+	//const results = data.items.map((item, index) => renderDetectResult(item));
 	
 	//Calling function for html generation
-	const result = renderResult(data);
-	$('.face-analysis-results').html(result);
+	$('.face-detect').html('');
+
+	const result = renderDetectResult(data);
+	$('.face-detect-results').html(result);
+
+	const compareButton = renderCompareUpload();
+	$('.face-compare').html(compareButton);
+
+	const restartButton = renderRestartButton();
+	$('.face-restart').html(restartButton);
+
 
 	//Defining dimension and positioning of original and displayed (resized) image
 	const naturalWidth = document.getElementById('face-img').naturalWidth;
@@ -166,12 +202,12 @@ function displayFaceDetectData(data) {
 	$('.js-landmarkBox').attr('style', `transform: rotateZ(${roll_angle}deg); width:${face_rectangle_width}px; height:${face_rectangle_height}px; left:${face_rectangle_left}px; top:${face_rectangle_top}px;`);
 	
 	//console.log(roll_angle);
-	//$('.face-analysis-results').html(result);
+	//$('.face-detect-results').html(result);
 
 }
 /*
 function displayFaceCompareData(data) {
-	const result = renderResult(data);
+	const result = renderDetectResult(data);
 	$('.js-search-results').html(result);
 }
 */
@@ -180,6 +216,7 @@ function displayFaceCompareData(data) {
 //Upload event triggered when user click upload button to input an image URL
 function watchUpload() {
 	//console.log(`watchSubmit running~`);
+	displayStartDetect();
 
 	$('.image-url').submit(event => {
 		console.log(`Uploading!`);
