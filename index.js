@@ -53,7 +53,7 @@ function postCompareData(callback) {
 
 }
 
-function renderDetectResult(result) {
+function renderDetectResult(DETECT_IMAGE_URL, result) {
 	//const genderScore = gender.toLowerCase()+"_score";
 	//const beauty = result.faces[0].attributes.beauty.genderScore;
 
@@ -121,10 +121,20 @@ function renderDetectResult(result) {
 	`;
 }
 
-function renderCompareResult(result) {
+function renderCompareResult(COMPARE_IMAGE_URL, result) {
 	const getConfidence = result.confidence;
 
 	return `
+		<div class="handle-img">
+			<div class="img-box">
+				<span class="helper"></span>
+				<img id="compare-img" src="${COMPARE_IMAGE_URL}">
+				<div class="js-drawFaceBorder drawFaceBorder">
+					<div class="js-landmarkBox landmarkBox"></div>
+				</div>
+			</div>
+		</div>
+
 		<div class="face-circle">
 			<h3 class="face-title">${getConfidence}%</h3>
 			<span class="face-text">Alike</span>
@@ -158,28 +168,7 @@ function renderRestartButton() {
 	`;
 }
 
-
-
-
-//Displaying face detection data from Face++ API
-//Dimension variables calculated based on original image are updated to reflect displayed (resized) image dimension 
-function displayFaceDetectData(data) {
-	//console.log(data.faces[0].attributes.headpose.roll_angle);
-	//const results = data.items.map((item, index) => renderDetectResult(item));
-	
-	//Calling function for html generation
-	$('.face-detect').html('');
-
-	const result = renderDetectResult(data);
-	$('.face-detect-results').html(result);
-
-	const compareButton = renderCompareUpload();
-	$('.face-compare').html(compareButton);
-
-	const restartButton = renderRestartButton();
-	$('.face-restart').html(restartButton);
-
-
+function displayLandmarkBox(data) {
 	//Defining dimension and positioning of original and displayed (resized) image
 	const naturalWidth = document.getElementById('face-img').naturalWidth;
 	const naturalHeight = document.getElementById('face-img').naturalHeight;
@@ -214,16 +203,45 @@ function displayFaceDetectData(data) {
 		`);
 	});
 */
-	$('.js-drawFaceBorder').attr('style', `width:${width}px; height:${height}px; top:50%; left:50%; margin-left:${marginleft}px; margin-top:${margintop}px;`);
-	$('.js-landmarkBox').attr('style', `transform: rotateZ(${roll_angle}deg); width:${face_rectangle_width}px; height:${face_rectangle_height}px; left:${face_rectangle_left}px; top:${face_rectangle_top}px;`);
+		$('.js-drawFaceBorder').attr('style', `width:${width}px; height:${height}px; top:50%; left:50%; margin-left:${marginleft}px; margin-top:${margintop}px;`);
+		$('.js-landmarkBox').attr('style', `transform: rotateZ(${roll_angle}deg); width:${face_rectangle_width}px; height:${face_rectangle_height}px; left:${face_rectangle_left}px; top:${face_rectangle_top}px;`);
 	
 	//console.log(roll_angle);
 	//$('.face-detect-results').html(result);
 
 }
 
+
+//Displaying face detection data from Face++ API
+//Dimension variables calculated based on original image are updated to reflect displayed (resized) image dimension 
+function displayFaceDetectData(data) {
+	//console.log(data.faces[0].attributes.headpose.roll_angle);
+	//const results = data.items.map((item, index) => renderDetectResult(item));
+	
+	//Calling function for html generation
+	$('.face-detect').html('');
+
+	const result = renderDetectResult(DETECT_IMAGE_URL, data);
+	$('.face-detect-results').html(result);
+
+	const compareButton = renderCompareUpload();
+	$('.face-compare').html(compareButton);
+
+	const restartButton = renderRestartButton();
+	$('.face-restart').html(restartButton);
+
+
+	//Listen to image loading complete event to trigger the drawing of landmark box
+	$('#face-img').on('load', event => {
+//	$('#face-img').load(event => {
+		console.log('here!');
+		displayLandmarkBox(data);
+	});
+	
+}
+
 function displayFaceCompareData(data) {
-	const result = renderCompareResult(data);
+	const result = renderCompareResult(COMPARE_IMAGE_URL, data);
 	$('.face-compare-results').html(result);
 }
 
@@ -270,9 +288,6 @@ function uploadDetect() {
 		DETECT_IMAGE_URL = $('.detect-url').val();
 		console.log(DETECT_IMAGE_URL);
 		$('.detect-url').val("");
-		postDetectData(displayFaceDetectData);
-		//Calling the function 2 more times to fully load resized image dimension 
-		//landmarkBox needs the updated resized image dimension for correct dimension and positioning 
 		postDetectData(displayFaceDetectData);
 		uploadCompare();	
 	});
