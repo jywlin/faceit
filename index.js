@@ -2,21 +2,22 @@ const FACE_PLUS_DETECT_URL = "https://api-us.faceplusplus.com/facepp/v3/detect";
 const FACE_PLUS_COMPARE_URL = "https://api-us.faceplusplus.com/facepp/v3/compare";
 
 //const IMAGE_URL = "http://www.pianohelp.net/pictures/PSY%20-%20Gangnam%20Style.jpeg"; //PSY
-//const IMAGE_URL = "https://vignette.wikia.nocookie.net/justdance/images/9/97/Beyonce.jpg/revision/latest?cb=20170517131254"; //Beyonce
+//const IMAGE_URL = "https://vignette.wikia.nocookie.net/justdance/images/9/97/Beyonce.jpg"; //Beyonce
 //const IMAGE_URL = "https://pbs.twimg.com/profile_images/782474226020200448/zDo-gAo0_400x400.jpg"; //Elon Musk
 //const IMAGE_URL = "http://cdn.cnn.com/cnnnext/dam/assets/161109151138-04-hillary-clinton-concession-speech-1109-full-169.jpg"; //Clinton
 //const IMAGE_URL = "http://1.bp.blogspot.com/-hMUpDcPMJUI/Vm75r4udnGI/AAAAAAAARLc/cUm2sWkeODk/s1600/Jennifer%2BLawrence%2Bhunger%2Bgames%2Bprequels%2Btoo%2Bsoon.jpg";
 //const IMAGE_URL = "https://upload.wikimedia.org/wikipedia/commons/7/71/Tom_Cruise_avp_2014_4.jpg"; //Tom Cruise
 //const IMAGE_URL = "http://i.dailymail.co.uk/i/pix/2015/10/21/01/016E0FB30000044D-0-image-a-40_1445387689827.jpg" //Yao Ming
 
-var IMAGE_URL = "";
+var DETECT_IMAGE_URL = "";
+var COMPARE_IMAGE_URL = "";
 
-function postDetectData(IMAGE_URL, callback) {
+function postDetectData(callback) {
 	//Query parameters for face detection API call
 	const query = {
 		api_key: "ed6us9-OR9eJ-TEAfUuI1btwiAeIEqrm",
 		api_secret: "JEnUSKtyvfiXX8xQnxfqD8NJKIMllhbp",
-		image_url: IMAGE_URL,
+		image_url: DETECT_IMAGE_URL,
 		return_landmark: 2,
 		return_attributes: "gender,age,smiling,facequality,eyestatus,emotion,skinstatus,beauty,ethnicity,headpose"
 /*
@@ -41,6 +42,16 @@ skinstatus
 	
 }
 
+function postCompareData(callback) {
+	const query = {
+		api_key: "ed6us9-OR9eJ-TEAfUuI1btwiAeIEqrm",
+		api_secret: "JEnUSKtyvfiXX8xQnxfqD8NJKIMllhbp",
+		image_url1: DETECT_IMAGE_URL,
+		image_url2: COMPARE_IMAGE_URL
+	}
+	$.post(FACE_PLUS_COMPARE_URL, query, callback, "json");
+
+}
 
 function renderDetectResult(result) {
 	//const genderScore = gender.toLowerCase()+"_score";
@@ -78,7 +89,7 @@ function renderDetectResult(result) {
 		<div class="handle-img">
 			<div class="img-box">
 				<span class="helper"></span>
-				<img id="face-img" src="${IMAGE_URL}">
+				<img id="face-img" src="${DETECT_IMAGE_URL}">
 				<div class="js-drawFaceBorder drawFaceBorder">
 					<div class="js-landmarkBox landmarkBox"></div>
 				</div>
@@ -110,24 +121,43 @@ function renderDetectResult(result) {
 	`;
 }
 
+function renderCompareResult(result) {
+	const getConfidence = result.confidence;
+
+	return `
+		<div class="face-circle">
+			<h3 class="face-title">${getConfidence}%</h3>
+			<span class="face-text">Alike</span>
+		</div>
+	`;
+
+}
+
 function renderCompareUpload() {
 	return `
-		<h2>Compare another face!</h2>	
+		<h2>Upload another pic for comparison!</h2>	
 		<form action="#" class="compare-img-url">
 			<label for="compare-url"></label>	
-			<input type="text" class="compare-url">
+			<input type="text" id="compare-url" class="compare-url">
 			<button type="submit">Upload</button>
 		</form>
 	`;
 }
 
+				
+
+
+
+
+
 function renderRestartButton() {
 	return `
 		<h2>Restart</h2>	
 		<label for="restart"></label>	
-		<button class="js-restart-button" type="submit">Restart</button>	
+		<button class="js-restart-button" id="restart" type="button">Restart</button>	
 	`;
 }
+
 
 
 
@@ -191,21 +221,22 @@ function displayFaceDetectData(data) {
 	//$('.face-detect-results').html(result);
 
 }
-/*
+
 function displayFaceCompareData(data) {
-	const result = renderDetectResult(data);
-	$('.js-search-results').html(result);
+	const result = renderCompareResult(data);
+	$('.face-compare-results').html(result);
 }
-*/
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 function renderInit() {
 	return `
 		<h1>Are you pretty, ugly, or pretty ugly :)</h1>
 		<h2>Upload a selfie for analysis!</h2>	
-		<form action="#" class="image-url">
-			<label for="url"></label>	
-			<input type="text" class="url">
+		<form action="#" class="detect-img-url">
+			<label for="detect-url"></label>	
+			<input type="text" id="detect-url" class="detect-url">
 			<button type="submit">Upload</button>
 		</form>	
 	`;
@@ -215,31 +246,57 @@ function displayInit() {
 	const init = renderInit();
 	$('.face-detect').html(init);
 	$('.face-detect-results').html('');
+	$('.face-compare-results').html('');
 	$('.face-compare').html('');
 	$('.face-restart').html('');
 	uploadDetect();
 }
 
 //Upload event triggered when user click upload button to input an image URL
+
+/////////////////////////////////////////////
+/////////////////////////////////////////////
+/////////////////////////////////////////////
+/////////////////////////////////////////////
+/////////////////////////////////////////////
+/////////////////////////////////////////////
+/////////////////////////////////////////////
+/////////////////////////////////////////////
+////////////////////change from submit to click???//////////////////////////////
 function uploadDetect() {
-	$('.image-url').submit(event => {
-		console.log(`Uploading!`);
+	$('.detect-img-url').submit(event => {
+		console.log(`Uploading Detect!`);
 		event.preventDefault();
-		IMAGE_URL = $('.url').val();
-		console.log(IMAGE_URL);
-		
-		$('.url').val("");
-		postDetectData(IMAGE_URL, displayFaceDetectData);
-		//Calling the function second time to fully load resized image dimension 
+		DETECT_IMAGE_URL = $('.detect-url').val();
+		console.log(DETECT_IMAGE_URL);
+		$('.detect-url').val("");
+		postDetectData(displayFaceDetectData);
+		//Calling the function 2 more times to fully load resized image dimension 
 		//landmarkBox needs the updated resized image dimension for correct dimension and positioning 
-		postDetectData(IMAGE_URL, displayFaceDetectData);
+		postDetectData(displayFaceDetectData);
+		uploadCompare();	
+	});
+}
+
+function uploadCompare() {
+	$('.face-compare').on('click', event => {
+	//$('.compare-img-url').submit(event => {
+		console.log(`Uploading Compare!`);
+		event.preventDefault();
+		COMPARE_IMAGE_URL = $('.compare-url').val();
+		console.log(COMPARE_IMAGE_URL);
+		$('.compare-url').val("");
+		postCompareData(displayFaceCompareData);
 	});
 }
 
 function restartDetect() {
 	$('.face-restart').on('click', '.js-restart-button', event => {
-		IMAGE_URL = "";
+		DETECT_IMAGE_URL = "";
+		COMPARE_IMAGE_URL = "";
 		displayInit();
+		console.log(`Restart Clicked!`);
+
 	});
 }
 
