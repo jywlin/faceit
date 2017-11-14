@@ -4,6 +4,11 @@
 
 }
 
+.mt-20 {
+  margin-top: 10% !important;
+}
+
+
 .handle-img {
 	height: 510px;
 /*	float: left;*/
