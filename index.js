@@ -12,12 +12,14 @@ const FACE_PLUS_COMPARE_URL = "https://api-us.faceplusplus.com/facepp/v3/compare
 var DETECT_IMAGE_URL = "";
 var COMPARE_IMAGE_URL = "";
 
-function postDetectData(callback) {
+function postDetectData(IMAGE_URL, callback) {
 	//Query parameters for face detection API call
+	console.log(`postDetectData: `+IMAGE_URL);
+		
 	const query = {
 		api_key: "ed6us9-OR9eJ-TEAfUuI1btwiAeIEqrm",
 		api_secret: "JEnUSKtyvfiXX8xQnxfqD8NJKIMllhbp",
-		image_url: DETECT_IMAGE_URL,
+		image_url: IMAGE_URL,
 		return_landmark: 2,
 		return_attributes: "gender,age,smiling,facequality,eyestatus,emotion,skinstatus,beauty,ethnicity,headpose"
 /*
@@ -90,8 +92,8 @@ function renderDetectResult(idString, IMAGE_URL, result) {
 			<div class="img-box">
 				<span class="helper"></span>
 				<img id="${imgIdString}" src="${IMAGE_URL}">
-				<div class="js-drawFaceBorder drawFaceBorder">
-					<div class="js-landmarkBox landmarkBox"></div>
+				<div class="js-${idString}-drawFaceBorder drawFaceBorder">
+					<div class="js-${idString}-landmarkBox landmarkBox"></div>
 				</div>
 			</div>
 		</div>
@@ -121,91 +123,10 @@ function renderDetectResult(idString, IMAGE_URL, result) {
 	`;
 }
 
-
-
-/*
-function renderDetectResult(DETECT_IMAGE_URL, result) {
-	//const genderScore = gender.toLowerCase()+"_score";
-	//const beauty = result.faces[0].attributes.beauty.genderScore;
-
-	//Sort emotion object in an array to find out the greatest confidence
-	const emotions = result.faces[0].attributes.emotion;
-	var sortEmotions = [];
-	
-	for (var emotion in emotions) {
-		sortEmotions.push([emotion,emotions[emotion]]);
-	}
-	//Sort emotion confidence level from high to low
-	sortEmotions.sort((a,b) => b[1]-a[1]);
-
-	//Sort skin object in an array to find out the greatest confidence
-	const skins = result.faces[0].attributes.skinstatus;
-	var sortSkins = [];
-	
-	for (var skin in skins) {
-		sortSkins.push([skin,skins[skin]]);
-	}
-	//Sort skin confidence level from high to low
-	sortSkins.sort((a,b) => b[1]-a[1]);
-
-	const getGender = result.faces[0].attributes.gender.value;
-	const getAge = result.faces[0].attributes.age.value;
-	const getEthnicity = result.faces[0].attributes.ethnicity.value;
-	const getEmotion = sortEmotions[0][0];
-	const getSkin = sortSkins[0][0];
-		
-	return `
-		<div class="handle-img">
-			<div class="img-box">
-				<span class="helper"></span>
-				<img id="face-img" src="${DETECT_IMAGE_URL}">
-				<div class="js-drawFaceBorder drawFaceBorder">
-					<div class="js-landmarkBox landmarkBox"></div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="face-details">
-			<div class="face-circle">
-				<h3 class="face-title">${getGender}</h3>
-				<span class="face-text">Gender</span>
-			</div>
-			<div class="face-circle">
-				<h3 class="face-title">${getAge}</h3>
-				<span class="face-text">Age</span>
-			</div>
-			<div class="face-circle">
-				<h3 class="face-title">${getEthnicity}</h3>
-				<span class="face-text">Race</span>
-			</div>
-			<div class="face-circle">
-				<h3 class="face-title">${getEmotion}</h3>
-				<span class="face-text">Emotion</span>
-			</div>
-			<div class="face-circle">
-				<h3 class="face-title">${getSkin}</h3>
-				<span class="face-text">Skin</span>
-			</div>
-		</div>
-	`;
-}
-*/
-
-
-function renderCompareResult(COMPARE_IMAGE_URL, result) {
+function renderCompareResult(result) {
 	const getConfidence = result.confidence;
 
 	return `
-		<div class="handle-img">
-			<div class="img-box">
-				<span class="helper"></span>
-				<img id="compare-img" src="${COMPARE_IMAGE_URL}">
-				<div class="js-drawFaceBorder drawFaceBorder">
-					<div class="js-landmarkBox landmarkBox"></div>
-				</div>
-			</div>
-		</div>
-
 		<div class="face-circle">
 			<h3 class="face-title">${getConfidence}%</h3>
 			<span class="face-text">Alike</span>
@@ -224,12 +145,6 @@ function renderCompareUpload() {
 		</form>
 	`;
 }
-
-				
-
-
-
-
 
 function renderRestartButton() {
 	return `
@@ -264,24 +179,11 @@ function displayLandmarkBox(idString, data) {
 	const face_rectangle_left = data.faces[0].face_rectangle.left/resize_ratio;
 	const face_rectangle_top = data.faces[0].face_rectangle.top/resize_ratio;
 
-
 	//Update the drawFaceBorder(current image dimention and position)
 	//Update the landmarkBox(box(es) around the face(s))
-	/*
-	$('#face-img').on('load', event => {
-		$('#face-img').after(`
-			<div class="drawFaceBorder" style="width:${width}px; height:${height}px; top:50%; left:50%; margin-left:${marginleft}px; margin-top:${margintop}px;">	
-				<div class="landmarkBox" style="transform: rotateZ(${roll_angle}deg); width:${face_rectangle_width}px; height:${face_rectangle_height}px; left:${face_rectangle_left}px; top:${face_rectangle_top}px;"></div>
-			</div>
-		`);
-	});
-*/
-		$('.js-drawFaceBorder').attr('style', `width:${width}px; height:${height}px; top:50%; left:50%; margin-left:${marginleft}px; margin-top:${margintop}px;`);
-		$('.js-landmarkBox').attr('style', `transform: rotateZ(${roll_angle}deg); width:${face_rectangle_width}px; height:${face_rectangle_height}px; left:${face_rectangle_left}px; top:${face_rectangle_top}px;`);
-	
-	//$('.face-detect-results').html(result);
+	$(`.js-${idString}-drawFaceBorder`).attr('style', `width:${width}px; height:${height}px; top:50%; left:50%; margin-left:${marginleft}px; margin-top:${margintop}px;`);
+	$(`.js-${idString}-landmarkBox`).attr('style', `transform: rotateZ(${roll_angle}deg); width:${face_rectangle_width}px; height:${face_rectangle_height}px; left:${face_rectangle_left}px; top:${face_rectangle_top}px;`);
 }
-
 
 //Displaying face detection data from Face++ API
 //Dimension variables calculated based on original image are updated to reflect displayed (resized) image dimension 
@@ -290,7 +192,8 @@ function displayFaceDetectData(data) {
 	$('.face-detect').html('');
 
 	const result = renderDetectResult('detect', DETECT_IMAGE_URL, data);
-	$('.face-detect-results').html(result);
+//	$('.face-detect-results').html(result);
+	$('.js-detect-box').html(result);
 
 	const compareButton = renderCompareUpload();
 	$('.face-compare').html(compareButton);
@@ -306,10 +209,24 @@ function displayFaceDetectData(data) {
 }
 
 function displayFaceCompareData(data) {
-	const result = renderCompareResult(COMPARE_IMAGE_URL, data);
-	$('.face-compare-results').html(result);
+	const detectResult = renderDetectResult('compare', COMPARE_IMAGE_URL, data);
+	$('.js-compare-box').html(detectResult);
+
+	$('#compare-face-img').on('load', event => {
+		console.log('here!');
+		displayLandmarkBox('compare', data);
+	});
+
+	$('.js-detect-box').addClass('col-lg-6');
+	$('.js-compare-box').addClass('col-lg-6');
+
 }
 
+function displayFaceCompareResult(data) {
+	const compareResult = renderCompareResult(data);
+	$('.face-compare-results').html(compareResult);
+	$('.face-compare').html('');
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -337,6 +254,8 @@ function displayInit() {
 	$('.face-compare-results').html('');
 	$('.face-compare').html('');
 	$('.face-restart').html('');
+	$('.js-detect-box').html('');
+	$('.js-compare-box').html('');
 	uploadDetect();
 }
 
@@ -358,20 +277,22 @@ function uploadDetect() {
 		DETECT_IMAGE_URL = $('.detect-url').val();
 		console.log(DETECT_IMAGE_URL);
 		$('.detect-url').val("");
-		postDetectData(displayFaceDetectData);
+		postDetectData(DETECT_IMAGE_URL, displayFaceDetectData);
 		uploadCompare();	
 	});
 }
 
 function uploadCompare() {
-	$('.face-compare').on('click', event => {
-	//$('.compare-img-url').submit(event => {
+	$('.face-compare').on('click', '.compare-img-url', event => {
+//	$('.face-compare').on('click', event => {
 		console.log(`Uploading Compare!`);
 		event.preventDefault();
 		COMPARE_IMAGE_URL = $('.compare-url').val();
 		console.log(COMPARE_IMAGE_URL);
 		$('.compare-url').val("");
-		postCompareData(displayFaceCompareData);
+		postDetectData(COMPARE_IMAGE_URL, displayFaceCompareData);
+		postCompareData(displayFaceCompareResult);
+		
 	});
 }
 
@@ -379,6 +300,8 @@ function restartDetect() {
 	$('.face-restart').on('click', '.js-restart-button', event => {
 		DETECT_IMAGE_URL = "";
 		COMPARE_IMAGE_URL = "";
+		$('.js-detect-box').removeClass('col-lg-6');
+		$('.js-compare-box').removeClass('col-lg-6');
 		displayInit();
 		console.log(`Restart Clicked!`);
 

@@ -4,12 +4,6 @@
 
 }
 
-.face-detect-results {
-  border: 1px solid black;
-}
-
-
-
 .mt-20 {
   margin-top: 10% !important;
 }
@@ -23,13 +17,14 @@
 
 .handle-img .img-box {
     zoom: 1;
-    width: 500px;
-    height: 500px;
+    width: 460px;
+    height: 460px;
     background-color: white;
     text-align: center;
     position: relative;
     overflow: hidden;
     white-space: nowrap;
+    margin: 0 auto;
 /*    margin: 1em 0;*/
 }
 
