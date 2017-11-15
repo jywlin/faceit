@@ -53,11 +53,12 @@ function postCompareData(callback) {
 
 }
 
-function renderDetectResult(DETECT_IMAGE_URL, result) {
+function renderDetectResult(idString, IMAGE_URL, result) {
+  const imgIdString = idString+"-face-img";
+
 	//const genderScore = gender.toLowerCase()+"_score";
 	//const beauty = result.faces[0].attributes.beauty.genderScore;
 
-			
 	//Sort emotion object in an array to find out the greatest confidence
 	const emotions = result.faces[0].attributes.emotion;
 	var sortEmotions = [];
@@ -77,7 +78,75 @@ function renderDetectResult(DETECT_IMAGE_URL, result) {
 	}
 	//Sort skin confidence level from high to low
 	sortSkins.sort((a,b) => b[1]-a[1]);
+
+	const getGender = result.faces[0].attributes.gender.value;
+	const getAge = result.faces[0].attributes.age.value;
+	const getEthnicity = result.faces[0].attributes.ethnicity.value;
+	const getEmotion = sortEmotions[0][0];
+	const getSkin = sortSkins[0][0];
+		
+	return `
+		<div class="handle-img">
+			<div class="img-box">
+				<span class="helper"></span>
+				<img id="${imgIdString}" src="${IMAGE_URL}">
+				<div class="js-drawFaceBorder drawFaceBorder">
+					<div class="js-landmarkBox landmarkBox"></div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="face-details">
+			<div class="face-circle">
+				<h3 class="face-title">${getGender}</h3>
+				<span class="face-text">Gender</span>
+			</div>
+			<div class="face-circle">
+				<h3 class="face-title">${getAge}</h3>
+				<span class="face-text">Age</span>
+			</div>
+			<div class="face-circle">
+				<h3 class="face-title">${getEthnicity}</h3>
+				<span class="face-text">Race</span>
+			</div>
+			<div class="face-circle">
+				<h3 class="face-title">${getEmotion}</h3>
+				<span class="face-text">Emotion</span>
+			</div>
+			<div class="face-circle">
+				<h3 class="face-title">${getSkin}</h3>
+				<span class="face-text">Skin</span>
+			</div>
+		</div>
+	`;
+}
+
+
+
+/*
+function renderDetectResult(DETECT_IMAGE_URL, result) {
+	//const genderScore = gender.toLowerCase()+"_score";
+	//const beauty = result.faces[0].attributes.beauty.genderScore;
+
+	//Sort emotion object in an array to find out the greatest confidence
+	const emotions = result.faces[0].attributes.emotion;
+	var sortEmotions = [];
 	
+	for (var emotion in emotions) {
+		sortEmotions.push([emotion,emotions[emotion]]);
+	}
+	//Sort emotion confidence level from high to low
+	sortEmotions.sort((a,b) => b[1]-a[1]);
+
+	//Sort skin object in an array to find out the greatest confidence
+	const skins = result.faces[0].attributes.skinstatus;
+	var sortSkins = [];
+	
+	for (var skin in skins) {
+		sortSkins.push([skin,skins[skin]]);
+	}
+	//Sort skin confidence level from high to low
+	sortSkins.sort((a,b) => b[1]-a[1]);
 
 	const getGender = result.faces[0].attributes.gender.value;
 	const getAge = result.faces[0].attributes.age.value;
@@ -120,6 +189,8 @@ function renderDetectResult(DETECT_IMAGE_URL, result) {
 		</div>
 	`;
 }
+*/
+
 
 function renderCompareResult(COMPARE_IMAGE_URL, result) {
 	const getConfidence = result.confidence;
@@ -168,12 +239,14 @@ function renderRestartButton() {
 	`;
 }
 
-function displayLandmarkBox(data) {
+function displayLandmarkBox(idString, data) {
+  const imgIdString = idString+"-face-img";
+
 	//Defining dimension and positioning of original and displayed (resized) image
-	const naturalWidth = document.getElementById('face-img').naturalWidth;
-	const naturalHeight = document.getElementById('face-img').naturalHeight;
-	const width = document.getElementById('face-img').clientWidth;
-	const height = document.getElementById('face-img').clientHeight;
+	const naturalWidth = document.getElementById(imgIdString).naturalWidth;
+	const naturalHeight = document.getElementById(imgIdString).naturalHeight;
+	const width = document.getElementById(imgIdString).clientWidth;
+	const height = document.getElementById(imgIdString).clientHeight;
 	const marginleft = -(width/2);
 	const margintop= -(height/2);
 	var resize_ratio = 1;
@@ -206,22 +279,17 @@ function displayLandmarkBox(data) {
 		$('.js-drawFaceBorder').attr('style', `width:${width}px; height:${height}px; top:50%; left:50%; margin-left:${marginleft}px; margin-top:${margintop}px;`);
 		$('.js-landmarkBox').attr('style', `transform: rotateZ(${roll_angle}deg); width:${face_rectangle_width}px; height:${face_rectangle_height}px; left:${face_rectangle_left}px; top:${face_rectangle_top}px;`);
 	
-	//console.log(roll_angle);
 	//$('.face-detect-results').html(result);
-
 }
 
 
 //Displaying face detection data from Face++ API
 //Dimension variables calculated based on original image are updated to reflect displayed (resized) image dimension 
 function displayFaceDetectData(data) {
-	//console.log(data.faces[0].attributes.headpose.roll_angle);
-	//const results = data.items.map((item, index) => renderDetectResult(item));
-	
-	//Calling function for html generation
+  //Calling function for html generation
 	$('.face-detect').html('');
 
-	const result = renderDetectResult(DETECT_IMAGE_URL, data);
+	const result = renderDetectResult('detect', DETECT_IMAGE_URL, data);
 	$('.face-detect-results').html(result);
 
 	const compareButton = renderCompareUpload();
@@ -230,14 +298,11 @@ function displayFaceDetectData(data) {
 	const restartButton = renderRestartButton();
 	$('.face-restart').html(restartButton);
 
-
 	//Listen to image loading complete event to trigger the drawing of landmark box
-	$('#face-img').on('load', event => {
-//	$('#face-img').load(event => {
+	$('#detect-face-img').on('load', event => {
 		console.log('here!');
-		displayLandmarkBox(data);
+		displayLandmarkBox('detect', data);
 	});
-	
 }
 
 function displayFaceCompareData(data) {

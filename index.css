@@ -1,8 +1,14 @@
 * {
-	box-sizing: border-box;
-	font-family: "Roboto", helvetica, sans-serif;
+    box-sizing: border-box;
+    font-family: "Roboto", helvetica, sans-serif;
 
 }
+
+.face-detect-results {
+  border: 1px solid black;
+}
+
+
 
 .mt-20 {
   margin-top: 10% !important;
@@ -10,9 +16,9 @@
 
 
 .handle-img {
-	height: 510px;
-/*	float: left;*/
-	/*border: 1px solid black;	*/
+    height: 510px;
+/*  float: left;*/
+    /*border: 1px solid black;  */
 }
 
 .handle-img .img-box {
@@ -28,9 +34,9 @@
 }
 
 .helper {
-	display: inline-block;
-	height: 100%;
-	vertical-align: middle;
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
 }
 
 .handle-img .img-box:after {
@@ -52,10 +58,10 @@
 }
 
 img {
-	border: none;
+    border: none;
 }
 
-.handle-img .img-box #face-img {
+.handle-img .img-box img {
     max-width: 100%;
     max-height: 100%;
     vertical-align: middle;
@@ -71,8 +77,8 @@ img {
 
 
 .drawFaceBorder {
-	position: absolute;
-	z-index: 20;
+    position: absolute;
+    z-index: 20;
 }
 
 .landmarkBox {
@@ -90,15 +96,15 @@ img {
 }
 
 .face-details {
-	width: 700px;
-	height: 130px;
-	display: inline-block;
-	/*border: 1px black solid;*/
+    width: 700px;
+    height: 130px;
+    display: inline-block;
+    /*border: 1px black solid;*/
     margin: 1em 0;
 }
 
 .face-circle {
-	display: inline-block;
+    display: inline-block;
     height: 120px;
     width: 120px;
     line-height: 5px;
@@ -106,25 +112,25 @@ img {
     vertical-align: middle;
     border: 2px #FE0BB5 solid;
     border-radius: 50%;
-	margin: 0 auto;
+    margin: 0 auto;
 }
 
 .face-title {
-	margin-top: 40%;
-	margin-left: auto;
-	margin-right: auto;
-	line-height: 5px;
+    margin-top: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 5px;
 }
 
 .face-text {
-	margin-left: auto;
-	margin-right: auto;
-	line-height: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 5px;
 }
 
 
 .face-compare, .face-restart {
-	display: inline-block;
-	margin-right: 50px;
+    display: inline-block;
+    margin-right: 50px;
 }
 
