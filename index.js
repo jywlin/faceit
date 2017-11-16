@@ -2,8 +2,8 @@ const FACE_PLUS_DETECT_URL = "https://api-us.faceplusplus.com/facepp/v3/detect";
 const FACE_PLUS_COMPARE_URL = "https://api-us.faceplusplus.com/facepp/v3/compare";
 
 //const IMAGE_URL = "http://www.pianohelp.net/pictures/PSY%20-%20Gangnam%20Style.jpeg"; //PSY
-//const IMAGE_URL = "https://vignette.wikia.nocookie.net/justdance/images/9/97/Beyonce.jpg"; //Beyonce
-//const IMAGE_URL = "https://pbs.twimg.com/profile_images/782474226020200448/zDo-gAo0_400x400.jpg"; //Elon Musk
+//const IMAGE_URL = "https://goo.gl/v8Mr1h"; //Beyonce
+//const IMAGE_URL = "https://goo.gl/56QsnY"; //Elon Musk
 //const IMAGE_URL = "http://cdn.cnn.com/cnnnext/dam/assets/161109151138-04-hillary-clinton-concession-speech-1109-full-169.jpg"; //Clinton
 //const IMAGE_URL = "http://1.bp.blogspot.com/-hMUpDcPMJUI/Vm75r4udnGI/AAAAAAAARLc/cUm2sWkeODk/s1600/Jennifer%2BLawrence%2Bhunger%2Bgames%2Bprequels%2Btoo%2Bsoon.jpg";
 //const IMAGE_URL = "https://upload.wikimedia.org/wikipedia/commons/7/71/Tom_Cruise_avp_2014_4.jpg"; //Tom Cruise
@@ -38,9 +38,11 @@ eyegaze
 skinstatus
 */
 	}
+	//console.log('Posting Detect Data! '+callback);
+	console.log('Query '+query.image_url);
+
 	//$.getJSON(FACE_PLUS_URL, query, callback);
 	$.post(FACE_PLUS_DETECT_URL, query, callback, "json");
-		//console.log(IMAGE_URL);
 	
 }
 
@@ -56,7 +58,7 @@ function postCompareData(callback) {
 }
 
 function renderDetectResult(idString, IMAGE_URL, result) {
-  const imgIdString = idString+"-face-img";
+	const imgIdString = idString+"-face-img";
 
 	//const genderScore = gender.toLowerCase()+"_score";
 	//const beauty = result.faces[0].attributes.beauty.genderScore;
@@ -86,7 +88,7 @@ function renderDetectResult(idString, IMAGE_URL, result) {
 	const getEthnicity = result.faces[0].attributes.ethnicity.value;
 	const getEmotion = sortEmotions[0][0];
 	const getSkin = sortSkins[0][0];
-		
+
 	return `
 		<div class="handle-img">
 			<div class="img-box">
@@ -99,29 +101,44 @@ function renderDetectResult(idString, IMAGE_URL, result) {
 		</div>
 		
 		<div class="face-details">
-			<div class="face-circle">
+
+			<div class="face-circle border-warning">
 				<h3 class="face-title">${getGender}</h3>
 				<span class="face-text">Gender</span>
 			</div>
-			<div class="face-circle">
+			<div class="face-circle border-danger">
 				<h3 class="face-title">${getAge}</h3>
 				<span class="face-text">Age</span>
 			</div>
-			<div class="face-circle">
+			<div class="face-circle border-info">
 				<h3 class="face-title">${getEthnicity}</h3>
 				<span class="face-text">Race</span>
 			</div>
-			<div class="face-circle">
+			<div class="face-circle border-primary">
 				<h3 class="face-title">${getEmotion}</h3>
 				<span class="face-text">Emotion</span>
 			</div>
-			<div class="face-circle">
+			<div class="face-circle border-success">
 				<h3 class="face-title">${getSkin}</h3>
 				<span class="face-text">Skin</span>
 			</div>
 		</div>
 	`;
 }
+
+/*
+			<div class="bs-callout bs-callout-danger">
+       			<h4>Key Expertise</h4>
+        		<ul class="list-group">
+          			<li class="list-group-item"> Lorem ipsum dolor sit amet, ea vel prima adhuc</li>
+        		</ul>
+      		</div>
+
+      		<div class="bs-callout bs-callout-warning">
+        		<p>Using color to add meaning only provides a visual text hidden with the </p>
+      		</div>
+
+*/
 
 function renderCompareResult(result) {
 	const getConfidence = result.confidence;
@@ -138,24 +155,14 @@ function renderCompareResult(result) {
 function renderCompareUpload() {
 	return `
 		<h2>Upload another pic for comparison!</h2>	
-		<form action="#" class="compare-img-url">
-			<label for="compare-url"></label>	
-			<input type="text" id="compare-url" class="compare-url">
-			<button type="submit">Upload</button>
-		</form>
-	`;
-}
-
-function renderRestartButton() {
-	return `
-		<h2>Restart</h2>	
-		<label for="restart"></label>	
-		<button class="js-restart-button" id="restart" type="button">Restart</button>	
+		<label class="col-12" for="compare-url"></label>	
+		<input class="col-6" type="text" id="compare-url">
+		<button id="compare-button" class="btn btn-primary" type="button">Upload</button>
 	`;
 }
 
 function displayLandmarkBox(idString, data) {
-  const imgIdString = idString+"-face-img";
+	const imgIdString = idString+"-face-img";
 
 	//Defining dimension and positioning of original and displayed (resized) image
 	const naturalWidth = document.getElementById(imgIdString).naturalWidth;
@@ -190,30 +197,27 @@ function displayLandmarkBox(idString, data) {
 function displayFaceDetectData(data) {
   //Calling function for html generation
 	$('.face-detect').html('');
+	$('.face-upload').html('');
 
 	const result = renderDetectResult('detect', DETECT_IMAGE_URL, data);
-//	$('.face-detect-results').html(result);
 	$('.js-detect-box').html(result);
 
 	const compareButton = renderCompareUpload();
 	$('.face-compare').html(compareButton);
 
-	const restartButton = renderRestartButton();
-	$('.face-restart').html(restartButton);
-
 	//Listen to image loading complete event to trigger the drawing of landmark box
 	$('#detect-face-img').on('load', event => {
-		console.log('here!');
 		displayLandmarkBox('detect', data);
 	});
 }
 
 function displayFaceCompareData(data) {
+//	console.log('Displaying Compare data!');
 	const detectResult = renderDetectResult('compare', COMPARE_IMAGE_URL, data);
 	$('.js-compare-box').html(detectResult);
-
+//	console.log('Loading Compare Image!');
 	$('#compare-face-img').on('load', event => {
-		console.log('here!');
+		console.log('Compare load complete!');
 		displayLandmarkBox('compare', data);
 	});
 
@@ -228,87 +232,90 @@ function displayFaceCompareResult(data) {
 	$('.face-compare').html('');
 }
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
 function renderInit() {
 	return `
 		<header class="col-12 text-center mt-20">
 			<h1>Are you pretty, ugly, or pretty ugly :)</h1>
 			<h2>Upload a selfie for analysis!</h2>
 		</header>	
+	`;
+}
+
+function renderUpload() {
+	return `
 		<form class="col-12 detect-img-url text-center" action="#">
 			<label class="col-12" for="detect-url"></label>	
-			<input class="col-6 detect-url" type="text" id="detect-url">
-			<button class="btn btn-primary" type="submit">Upload</button>
+			<input class="col-6" type="text" id="detect-url">
+			<button id="detect-button" class="btn btn-primary" type="submit">Upload</button>
 		</form>	
 	`;
-
-	
-
 }
+
 
 function displayInit() {
 	const init = renderInit();
+	const upload = renderUpload();
 	$('.face-detect').html(init);
 	$('.face-detect-results').html('');
 	$('.face-compare-results').html('');
 	$('.face-compare').html('');
-	$('.face-restart').html('');
+	//$('.face-restart').html('');
 	$('.js-detect-box').html('');
 	$('.js-compare-box').html('');
+	$('.face-upload').html(upload);
 	uploadDetect();
 }
 
 //Upload event triggered when user click upload button to input an image URL
-
-/////////////////////////////////////////////
-/////////////////////////////////////////////
-/////////////////////////////////////////////
-/////////////////////////////////////////////
-/////////////////////////////////////////////
-/////////////////////////////////////////////
 /////////////////////////////////////////////
 /////////////////////////////////////////////
 ////////////////////change from submit to click???//////////////////////////////
 function uploadDetect() {
 	$('.detect-img-url').submit(event => {
-		console.log(`Uploading Detect!`);
+//		console.log(`Uploading Detect!`);
 		event.preventDefault();
-		DETECT_IMAGE_URL = $('.detect-url').val();
-		console.log(DETECT_IMAGE_URL);
-		$('.detect-url').val("");
+		DETECT_IMAGE_URL = $('#detect-url').val();
+//		console.log(DETECT_IMAGE_URL);
+		$('#detect-url').val("");
 		postDetectData(DETECT_IMAGE_URL, displayFaceDetectData);
 		uploadCompare();	
 	});
 }
 
+
+function restartDetect() {
+	$('#link-home').on('click', event => {
+		DETECT_IMAGE_URL = "";
+		COMPARE_IMAGE_URL = "";
+		$('.js-detect-box').removeClass('col-lg-6');
+		$('.js-compare-box').removeClass('col-lg-6');
+		
+//		console.log(`Restart Clicked!`);
+		
+		//Reload the page
+		location.reload();
+		//Alternative woring method to reload page
+		//window.location.href=window.location.href;
+	});
+}
+
 function uploadCompare() {
-	$('.face-compare').on('click', '.compare-img-url', event => {
-//	$('.face-compare').on('click', event => {
-		console.log(`Uploading Compare!`);
+//	console.log(`Checking Compare!`);
+	$('.face-compare').on('click', '#compare-button', event => {
+//		console.log(`Compare clicked!`);
 		event.preventDefault();
-		COMPARE_IMAGE_URL = $('.compare-url').val();
-		console.log(COMPARE_IMAGE_URL);
-		$('.compare-url').val("");
+		COMPARE_IMAGE_URL = $('#compare-url').val();
+//		console.log(COMPARE_IMAGE_URL);
+		$('#compare-url').val("");
 		postDetectData(COMPARE_IMAGE_URL, displayFaceCompareData);
 		postCompareData(displayFaceCompareResult);
 		
 	});
 }
 
-function restartDetect() {
-	$('.face-restart').on('click', '.js-restart-button', event => {
-		DETECT_IMAGE_URL = "";
-		COMPARE_IMAGE_URL = "";
-		$('.js-detect-box').removeClass('col-lg-6');
-		$('.js-compare-box').removeClass('col-lg-6');
-		displayInit();
-		console.log(`Restart Clicked!`);
-
-	});
-}
 
 function initApp() {
+//	console.log(`Starting Fresh!`);
 	displayInit();
 	restartDetect();
 }
