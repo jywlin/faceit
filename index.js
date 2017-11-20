@@ -21,22 +21,7 @@ function postDetectData(IMAGE_URL, callback) {
 		api_secret: "JEnUSKtyvfiXX8xQnxfqD8NJKIMllhbp",
 		image_url: IMAGE_URL,
 		return_landmark: 2,
-		return_attributes: "gender,age,smiling,facequality,eyestatus,emotion,skinstatus,beauty,ethnicity,headpose"
-/*
-gender
-age
-smiling
-headpose
-facequality
-blur
-eyestatus
-emotion
-ethnicity
-beauty
-mouthstatus
-eyegaze
-skinstatus
-*/
+		return_attributes: "gender,age,headpose,emotion,ethnicity,beauty,skinstatus"
 	}
 	//console.log('Posting Detect Data! '+callback);
 	console.log('Query '+query.image_url);
@@ -60,9 +45,6 @@ function postCompareData(callback) {
 function renderDetectResult(idString, IMAGE_URL, result) {
 	const imgIdString = idString+"-face-img";
 
-	//const genderScore = gender.toLowerCase()+"_score";
-	//const beauty = result.faces[0].attributes.beauty.genderScore;
-
 	//Sort emotion object in an array to find out the greatest confidence
 	const emotions = result.faces[0].attributes.emotion;
 	var sortEmotions = [];
@@ -83,11 +65,21 @@ function renderDetectResult(idString, IMAGE_URL, result) {
 	//Sort skin confidence level from high to low
 	sortSkins.sort((a,b) => b[1]-a[1]);
 
+  //const genderScore = result.faces[0].attributes.gender.value.toLowerCase()+"_score";
+
 	const getGender = result.faces[0].attributes.gender.value;
 	const getAge = result.faces[0].attributes.age.value;
 	const getEthnicity = result.faces[0].attributes.ethnicity.value;
 	const getEmotion = sortEmotions[0][0];
 	const getSkin = sortSkins[0][0];
+	var getBeauty = "";
+	
+	if ($(getGender).find("Male")) {
+	  getBeauty = Math.round(result.faces[0].attributes.beauty.male_score);
+	}
+	else if (getGender.find("Female")) {
+	  getBeauty = Math.round(result.faces[0].attributes.beauty.female_score);
+	}
 
 	return `
 		<div class="handle-img">
@@ -101,7 +93,12 @@ function renderDetectResult(idString, IMAGE_URL, result) {
 		</div>
 		
 		<div class="face-details">
-
+	    <p>Beauty Score</p>
+	    <div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="${getBeauty}%" aria-valuemin="0" aria-valuemax="100" style="width: ${getBeauty}%">${getBeauty}%</div>
+      </div>
+    
+    
 			<div class="face-circle border-warning">
 				<h3 class="face-title">${getGender}</h3>
 				<span class="face-text">Gender</span>
@@ -133,24 +130,32 @@ function renderDetectResult(idString, IMAGE_URL, result) {
           			<li class="list-group-item"> Lorem ipsum dolor sit amet, ea vel prima adhuc</li>
         		</ul>
       		</div>
-
       		<div class="bs-callout bs-callout-warning">
         		<p>Using color to add meaning only provides a visual text hidden with the </p>
       		</div>
-
 */
 
 function renderCompareResult(result) {
-	const getConfidence = result.confidence;
+	const getConfidence = Math.round(result.confidence);
 
 	return `
-		<div class="face-circle">
-			<h3 class="face-title">${getConfidence}%</h3>
-			<span class="face-text">Alike</span>
-		</div>
+		  <p>Alike</p>
+		  <div class="progress">
+        <div id="progress-alike" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="${getConfidence}%" aria-valuemin="0" aria-valuemax="100" style="width: ${getConfidence}%">${getConfidence}%</div>
+      </div>
+		
+		
 	`;
 
 }
+
+/*
+<div class="face-circle">
+			<h3 class="face-title">${getConfidence}%</h3>
+			<span class="face-text">Alike</span>
+		</div>
+*/		
+
 
 function renderCompareUpload() {
 	return `

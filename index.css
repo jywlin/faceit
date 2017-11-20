@@ -123,12 +123,33 @@ img {
     z-index: 20;
 }
 
+.progress {
+  width: 75%;
+  margin-bottom: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
 .face-details {
     width: 700px;
     height: 130px;
     display: inline-block;
     /*border: 1px black solid;*/
-    margin: 1em 0;
+    margin-top: 1em;
+    margin-bottom: 40px;
+}
+
+.face-details p {
+  line-height: 1px;
+}
+
+.progress-bar {
+  background-color: rgba(244, 67, 54, 0.7);
+}
+
+#progress-alike {
+  background-color: rgba(156, 39, 176, 0.7);
 }
 
 .face-circle {
@@ -154,7 +175,7 @@ img {
 .face-text {
     margin-left: auto;
     margin-right: auto;
-    line-height: 5px;
+    line-height: 20px;
 }
 
 
