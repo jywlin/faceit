@@ -1,7 +1,6 @@
 const FACE_PLUS_DETECT_URL = "https://api-us.faceplusplus.com/facepp/v3/detect";
 const FACE_PLUS_COMPARE_URL = "https://api-us.faceplusplus.com/facepp/v3/compare";
 
-//const IMAGE_URL = "http://www.pianohelp.net/pictures/PSY%20-%20Gangnam%20Style.jpeg"; //PSY
 //const IMAGE_URL = "https://goo.gl/v8Mr1h"; //Beyonce
 //const IMAGE_URL = "https://goo.gl/56QsnY"; //Elon Musk
 //const IMAGE_URL = "http://cdn.cnn.com/cnnnext/dam/assets/161109151138-04-hillary-clinton-concession-speech-1109-full-169.jpg"; //Clinton
@@ -24,11 +23,9 @@ function postDetectData(IMAGE_URL, callback) {
 		return_attributes: "gender,age,headpose,emotion,ethnicity,beauty,skinstatus"
 	}
 	//console.log('Posting Detect Data! '+callback);
-	console.log('Query '+query.image_url);
+	//console.log('Query '+query.image_url);
 
-	//$.getJSON(FACE_PLUS_URL, query, callback);
 	$.post(FACE_PLUS_DETECT_URL, query, callback, "json");
-	
 }
 
 function postCompareData(callback) {
@@ -39,7 +36,6 @@ function postCompareData(callback) {
 		image_url2: COMPARE_IMAGE_URL
 	}
 	$.post(FACE_PLUS_COMPARE_URL, query, callback, "json");
-
 }
 
 function renderDetectResult(idString, IMAGE_URL, result) {
@@ -65,19 +61,55 @@ function renderDetectResult(idString, IMAGE_URL, result) {
 	//Sort skin confidence level from high to low
 	sortSkins.sort((a,b) => b[1]-a[1]);
 
-  //const genderScore = result.faces[0].attributes.gender.value.toLowerCase()+"_score";
-
 	const getGender = result.faces[0].attributes.gender.value;
 	const getAge = result.faces[0].attributes.age.value;
 	const getEthnicity = result.faces[0].attributes.ethnicity.value;
-	const getEmotion = sortEmotions[0][0];
 	const getSkin = sortSkins[0][0];
+	const getEmotion = sortEmotions[0][0];
+
+  var getSkinDes = "";
+	var getEmotionDes = "";
 	var getBeauty = "";
 	
-	if ($(getGender).find("Male")) {
+	if (getSkin === "health") {
+    getSkinDes = "Healthy";
+  }
+  else if (getSkin === "stain") {
+    getSkinDes = "Stain";
+  }
+  else if (getSkin === "acne") {
+    getSkinDes = "Acne";
+  }
+  else if (getSkin === "dark_circle") {
+    getSkinDes = "Bags";
+  }
+  
+  if (getEmotion === "disgust") {
+    getEmotionDes = "Disgust";
+  }
+  else if (getEmotion === "anger") {
+    getEmotionDes = "Anger";
+  }
+  else if (getEmotion === "fear") {
+    getEmotionDes = "Fear";
+  }
+  else if (getEmotion === "happiness") {
+    getEmotionDes = "Joy";
+  }
+  else if (getEmotion === "neutral") {
+    getEmotionDes = "Trust";
+  }
+  else if (getEmotion === "sadness") {
+    getEmotionDes = "Sadness";
+  }
+  else if (getEmotion === "surprise") {
+    getEmotionDes = "Surprise";
+  }
+
+	if (getGender === "Male") {
 	  getBeauty = Math.round(result.faces[0].attributes.beauty.male_score);
 	}
-	else if (getGender.find("Female")) {
+	else if (getGender === "Female") {
 	  getBeauty = Math.round(result.faces[0].attributes.beauty.female_score);
 	}
 
@@ -98,25 +130,24 @@ function renderDetectResult(idString, IMAGE_URL, result) {
         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="${getBeauty}%" aria-valuemin="0" aria-valuemax="100" style="width: ${getBeauty}%">${getBeauty}%</div>
       </div>
     
-    
 			<div class="face-circle border-warning">
-				<h3 class="face-title">${getGender}</h3>
+				<h6 class="face-title">${getGender}</h6>
 				<span class="face-text">Gender</span>
 			</div>
 			<div class="face-circle border-danger">
-				<h3 class="face-title">${getAge}</h3>
+				<h6 class="face-title">${getAge}</h6>
 				<span class="face-text">Age</span>
 			</div>
 			<div class="face-circle border-info">
-				<h3 class="face-title">${getEthnicity}</h3>
+				<h6 class="face-title">${getEthnicity}</h6>
 				<span class="face-text">Race</span>
 			</div>
 			<div class="face-circle border-primary">
-				<h3 class="face-title">${getEmotion}</h3>
+				<h6 class="face-title">${getEmotionDes}</h6>
 				<span class="face-text">Emotion</span>
 			</div>
 			<div class="face-circle border-success">
-				<h3 class="face-title">${getSkin}</h3>
+				<h6 class="face-title">${getSkinDes}</h6>
 				<span class="face-text">Skin</span>
 			</div>
 		</div>
@@ -139,30 +170,19 @@ function renderCompareResult(result) {
 	const getConfidence = Math.round(result.confidence);
 
 	return `
-		  <p>Alike</p>
+		  <p>Alikeness</p>
 		  <div class="progress">
         <div id="progress-alike" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="${getConfidence}%" aria-valuemin="0" aria-valuemax="100" style="width: ${getConfidence}%">${getConfidence}%</div>
       </div>
-		
-		
 	`;
-
 }
-
-/*
-<div class="face-circle">
-			<h3 class="face-title">${getConfidence}%</h3>
-			<span class="face-text">Alike</span>
-		</div>
-*/		
-
 
 function renderCompareUpload() {
 	return `
 		<h2>Upload another pic for comparison!</h2>	
 		<label class="col-12" for="compare-url"></label>	
 		<input class="col-6" type="text" id="compare-url">
-		<button id="compare-button" class="btn btn-primary" type="button">Upload</button>
+		<button id="compare-button" class="btn btn-danger" type="button">URL</button>
 	`;
 }
 
@@ -228,7 +248,6 @@ function displayFaceCompareData(data) {
 
 	$('.js-detect-box').addClass('col-lg-6');
 	$('.js-compare-box').addClass('col-lg-6');
-
 }
 
 function displayFaceCompareResult(data) {
@@ -251,11 +270,10 @@ function renderUpload() {
 		<form class="col-12 detect-img-url text-center" action="#">
 			<label class="col-12" for="detect-url"></label>	
 			<input class="col-6" type="text" id="detect-url">
-			<button id="detect-button" class="btn btn-primary" type="submit">Upload</button>
+			<button id="detect-button" class="btn btn-danger" type="submit">URL</button>
 		</form>	
 	`;
 }
-
 
 function displayInit() {
 	const init = renderInit();
@@ -264,7 +282,6 @@ function displayInit() {
 	$('.face-detect-results').html('');
 	$('.face-compare-results').html('');
 	$('.face-compare').html('');
-	//$('.face-restart').html('');
 	$('.js-detect-box').html('');
 	$('.js-compare-box').html('');
 	$('.face-upload').html(upload);
@@ -294,9 +311,7 @@ function restartDetect() {
 		COMPARE_IMAGE_URL = "";
 		$('.js-detect-box').removeClass('col-lg-6');
 		$('.js-compare-box').removeClass('col-lg-6');
-		
 //		console.log(`Restart Clicked!`);
-		
 		//Reload the page
 		location.reload();
 		//Alternative woring method to reload page
@@ -317,7 +332,6 @@ function uploadCompare() {
 		
 	});
 }
-
 
 function initApp() {
 //	console.log(`Starting Fresh!`);
