@@ -254,6 +254,7 @@ function displayFaceCompareResult(data) {
 	const compareResult = renderCompareResult(data);
 	$('.face-compare-results').html(compareResult);
 	$('.face-compare').html('');
+	$('.face-footer').html('');
 }
 
 function renderInit() {
