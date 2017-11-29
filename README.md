@@ -3,7 +3,7 @@ A responsive app to detect and compare human faces for analysis.
 
 #	Screenshots
 Home Page to Start the App
-https://raw.githubusercontent.com/fishtailwrinkle/Capstone1/master/Face-Start.JPG
+https://github.com/fishtailwrinkle/Face-It/blob/master/Face-Start.JPG?raw=true
 
 Face Detection Example
 https://github.com/fishtailwrinkle/Capstone1/blob/master/Face-Detect.JPG?raw=true
