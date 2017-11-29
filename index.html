@@ -9,7 +9,7 @@
 	</head>
 
 	<body>
-		<nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+		<nav role="navigation" class="navbar navbar-expand-lg navbar-dark bg-danger" aria-live="polite">
 			<span class="navbar-brand mb-0 h1"></span>
 		  	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
 		    	<span class="navbar-toggler-icon"></span>
@@ -22,7 +22,7 @@
 		  	</div>
 		</nav>
 		
-		<main role="main">
+		<main role="main" aria-live="assertive">
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-12 face-detect"></div>
@@ -38,7 +38,7 @@
 			</div>
 		</main>
 
-		<footer role="contentinfo">
+		<footer role="contentinfo" aria-live="polite">
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-12 face-footertext-left">
