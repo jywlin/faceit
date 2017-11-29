@@ -181,7 +181,7 @@ function renderCompareUpload() {
 	return `
 		<h2>Upload another pic for comparison!</h2>	
 		<label class="col-12" for="compare-url"></label>	
-		<input class="col-6" type="text" id="compare-url">
+		<input class="col-6" type="text" id="compare-url" required>
 		<button id="compare-button" class="btn btn-danger" type="button">URL</button>
 	`;
 }
