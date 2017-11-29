@@ -117,7 +117,7 @@ function renderDetectResult(idString, IMAGE_URL, result) {
 		<div class="handle-img">
 			<div class="img-box">
 				<span class="helper"></span>
-				<img id="${imgIdString}" src="${IMAGE_URL}">
+				<img id="${imgIdString}" src="${IMAGE_URL}" alt="${imgIdString}">
 				<div class="js-${idString}-drawFaceBorder drawFaceBorder">
 					<div class="js-${idString}-landmarkBox landmarkBox"></div>
 				</div>
