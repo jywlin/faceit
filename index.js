@@ -260,7 +260,7 @@ function displayFaceCompareResult(data) {
 function renderInit() {
 	return `
 		<header class="col-12 text-center mt-20">
-			<h1>Are you pretty, ugly, or pretty ugly :)</h1>
+			<h1>How do you look? Let's Face-It :)</h1>
 			<h2>Upload a selfie for analysis!</h2>
 		</header>	
 	`;
@@ -270,7 +270,7 @@ function renderUpload() {
 	return `
 		<form class="col-12 detect-img-url text-center" action="#">
 			<label class="col-12" for="detect-url"></label>	
-			<input class="col-6" type="text" id="detect-url">
+			<input class="col-6" type="text" id="detect-url" required>
 			<button id="detect-button" class="btn btn-danger" type="submit">URL</button>
 		</form>	
 	`;
