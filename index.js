@@ -125,31 +125,40 @@ function renderDetectResult(idString, IMAGE_URL, result) {
 		</div>
 		
 		<div class="face-details">
-	    <p>Beauty Score</p>
-	    <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="${getBeauty}%" aria-valuemin="0" aria-valuemax="100" style="width: ${getBeauty}%">${getBeauty}%</div>
-      </div>
+	    	<p>Beauty Score</p>
+	    	<div class="progress" style="height: 40px">
+        		<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="${getBeauty}%" aria-valuemin="0" aria-valuemax="100" style="width: ${getBeauty}%">${getBeauty}%</div>
+      		</div>
     
+      		<div>
+
 			<div class="face-circle border-warning">
-				<h6 class="face-title">${getGender}</h6>
+				<h4 class="face-title">${getGender}</h4>
 				<span class="face-text">Gender</span>
 			</div>
 			<div class="face-circle border-danger">
-				<h6 class="face-title">${getAge}</h6>
+				<h4 class="face-title">${getAge}</h4>
 				<span class="face-text">Age</span>
 			</div>
 			<div class="face-circle border-info">
-				<h6 class="face-title">${getEthnicity}</h6>
+				<h4 class="face-title">${getEthnicity}</h4>
 				<span class="face-text">Race</span>
 			</div>
+
+			</div>
+			<div>
+
 			<div class="face-circle border-primary">
-				<h6 class="face-title">${getEmotionDes}</h6>
+				<h4 class="face-title">${getEmotionDes}</h4>
 				<span class="face-text">Emotion</span>
 			</div>
 			<div class="face-circle border-success">
-				<h6 class="face-title">${getSkinDes}</h6>
+				<h4 class="face-title">${getSkinDes}</h4>
 				<span class="face-text">Skin</span>
 			</div>
+
+			</div>
+
 		</div>
 	`;
 }
@@ -170,10 +179,12 @@ function renderCompareResult(result) {
 	const getConfidence = Math.round(result.confidence);
 
 	return `
+	  	<div class="face-alike">
 		  <p>Alikeness</p>
-		  <div class="progress">
-        <div id="progress-alike" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="${getConfidence}%" aria-valuemin="0" aria-valuemax="100" style="width: ${getConfidence}%">${getConfidence}%</div>
-      </div>
+ 			<div class="progress" style="height: 40px">
+            	<div id="progress-alike" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="${getConfidence}%" aria-valuemin="0" aria-valuemax="100" style="width: ${getConfidence}%">${getConfidence}%</div>
+      		</div>
+      	</div>
 	`;
 }
 
@@ -182,7 +193,7 @@ function renderCompareUpload() {
 		<h2>Upload another pic for comparison!</h2>	
 		<label class="col-12" for="compare-url"></label>	
 		<input class="col-6" type="text" id="compare-url" required>
-		<button id="compare-button" class="btn btn-danger" type="button">URL</button>
+		<button id="compare-button" class="btn btn-danger btn-lg" type="button">URL</button>
 	`;
 }
 
@@ -271,7 +282,7 @@ function renderUpload() {
 		<form class="col-12 detect-img-url text-center" action="#">
 			<label class="col-12" for="detect-url"></label>	
 			<input class="col-6" type="text" id="detect-url" required>
-			<button id="detect-button" class="btn btn-danger" type="submit">URL</button>
+			<button id="detect-button" class="btn btn-danger btn-lg" type="submit">URL</button>
 		</form>	
 	`;
 }
