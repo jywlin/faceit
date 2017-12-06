@@ -25,7 +25,13 @@ function postDetectData(IMAGE_URL, callback) {
 	//console.log('Posting Detect Data! '+callback);
 	//console.log('Query '+query.image_url);
 
-	$.post(FACE_PLUS_DETECT_URL, query, callback, "json");
+	$.post(FACE_PLUS_DETECT_URL, query, callback, "json")
+		.fail(() => {
+			//console.log("FAILED!!");
+			//$('#detect-button').tooltip('show');
+			//$('#compare-button').tooltip('show');
+			alert("Please review the image requirements and provide a valid URL to your image!");
+		});
 }
 
 function postCompareData(callback) {
@@ -131,7 +137,6 @@ function renderDetectResult(idString, IMAGE_URL, result) {
       		</div>
     
       		<div>
-
 			<div class="face-circle border-warning">
 				<h4 class="face-title">${getGender}</h4>
 				<span class="face-text">Gender</span>
@@ -144,10 +149,8 @@ function renderDetectResult(idString, IMAGE_URL, result) {
 				<h4 class="face-title">${getEthnicity}</h4>
 				<span class="face-text">Race</span>
 			</div>
-
 			</div>
 			<div>
-
 			<div class="face-circle border-primary">
 				<h4 class="face-title">${getEmotionDes}</h4>
 				<span class="face-text">Emotion</span>
@@ -156,9 +159,7 @@ function renderDetectResult(idString, IMAGE_URL, result) {
 				<h4 class="face-title">${getSkinDes}</h4>
 				<span class="face-text">Skin</span>
 			</div>
-
 			</div>
-
 		</div>
 	`;
 }
@@ -192,7 +193,7 @@ function renderCompareUpload() {
 	return `
 		<h2>Upload another pic for comparison!</h2>	
 		<label class="col-12" for="compare-url"></label>	
-		<input class="col-6" type="text" id="compare-url" required>
+		<input class="col-6" type="text" id="compare-url">
 		<button id="compare-button" class="btn btn-danger btn-lg" type="button">URL</button>
 	`;
 }
@@ -231,6 +232,11 @@ function displayLandmarkBox(idString, data) {
 //Displaying face detection data from Face++ API
 //Dimension variables calculated based on original image are updated to reflect displayed (resized) image dimension 
 function displayFaceDetectData(data) {
+
+	//$('#detect-button').tooltip('hide');
+	//$('#compare-button').tooltip('hide');
+
+
   //Calling function for html generation
 	$('.face-detect').html('');
 	$('.face-upload').html('');
@@ -248,6 +254,11 @@ function displayFaceDetectData(data) {
 }
 
 function displayFaceCompareData(data) {
+
+//	$('#detect-button').tooltip('hide');
+//	$('#compare-button').tooltip('hide');
+
+
 //	console.log('Displaying Compare data!');
 	const detectResult = renderDetectResult('compare', COMPARE_IMAGE_URL, data);
 	$('.js-compare-box').html(detectResult);
@@ -281,7 +292,7 @@ function renderUpload() {
 	return `
 		<form class="col-12 detect-img-url text-center" action="#">
 			<label class="col-12" for="detect-url"></label>	
-			<input class="col-6" type="text" id="detect-url" required>
+			<input class="col-6" type="text" id="detect-url">
 			<button id="detect-button" class="btn btn-danger btn-lg" type="submit">URL</button>
 		</form>	
 	`;
@@ -333,7 +344,7 @@ function restartDetect() {
 
 function uploadCompare() {
 //	console.log(`Checking Compare!`);
-	$('.face-compare').on('click', '#compare-button', event => {
+	$('.face-compare').unbind().on('click', '#compare-button', event => {
 //		console.log(`Compare clicked!`);
 		event.preventDefault();
 		COMPARE_IMAGE_URL = $('#compare-url').val();
