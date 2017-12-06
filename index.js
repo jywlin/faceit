@@ -26,10 +26,14 @@ function postDetectData(IMAGE_URL, callback) {
 	//console.log('Query '+query.image_url);
 
 	$.post(FACE_PLUS_DETECT_URL, query, callback, "json")
+<<<<<<< HEAD
 		.fail(() => {
 			//console.log("FAILED!!");
 			//$('#detect-button').tooltip('show');
 			//$('#compare-button').tooltip('show');
+=======
+	.fail(() => {
+>>>>>>> 0b6e9efa44082110f653f77433410fa151fafd21
 			alert("Please review the image requirements and provide a valid URL to your image!");
 		});
 }
