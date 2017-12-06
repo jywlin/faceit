@@ -3,9 +3,7 @@ const FACE_PLUS_COMPARE_URL = "https://api-us.faceplusplus.com/facepp/v3/compare
 
 //const IMAGE_URL = "https://goo.gl/v8Mr1h"; //Beyonce
 //const IMAGE_URL = "https://goo.gl/56QsnY"; //Elon Musk
-//const IMAGE_URL = "http://cdn.cnn.com/cnnnext/dam/assets/161109151138-04-hillary-clinton-concession-speech-1109-full-169.jpg"; //Clinton
 //const IMAGE_URL = "http://1.bp.blogspot.com/-hMUpDcPMJUI/Vm75r4udnGI/AAAAAAAARLc/cUm2sWkeODk/s1600/Jennifer%2BLawrence%2Bhunger%2Bgames%2Bprequels%2Btoo%2Bsoon.jpg";
-//const IMAGE_URL = "https://upload.wikimedia.org/wikipedia/commons/7/71/Tom_Cruise_avp_2014_4.jpg"; //Tom Cruise
 //const IMAGE_URL = "http://i.dailymail.co.uk/i/pix/2015/10/21/01/016E0FB30000044D-0-image-a-40_1445387689827.jpg" //Yao Ming
 
 var DETECT_IMAGE_URL = "";
@@ -22,12 +20,9 @@ function postDetectData(IMAGE_URL, callback) {
 		return_landmark: 2,
 		return_attributes: "gender,age,headpose,emotion,ethnicity,beauty,skinstatus"
 	}
-	//console.log('Posting Detect Data! '+callback);
-	//console.log('Query '+query.image_url);
 
 	$.post(FACE_PLUS_DETECT_URL, query, callback, "json")
 		.fail(() => {
-			//console.log("FAILED!!");
 			//$('#detect-button').tooltip('show');
 			//$('#compare-button').tooltip('show');
 			alert("Please review the image requirements and provide a valid URL to your image!");
@@ -73,22 +68,22 @@ function renderDetectResult(idString, IMAGE_URL, result) {
 	const getSkin = sortSkins[0][0];
 	const getEmotion = sortEmotions[0][0];
 
-  var getSkinDes = "";
+  	var getSkinDes = "";
 	var getEmotionDes = "";
 	var getBeauty = "";
 	
 	if (getSkin === "health") {
-    getSkinDes = "Healthy";
-  }
-  else if (getSkin === "stain") {
-    getSkinDes = "Stain";
-  }
-  else if (getSkin === "acne") {
-    getSkinDes = "Acne";
-  }
-  else if (getSkin === "dark_circle") {
-    getSkinDes = "Bags";
-  }
+    	getSkinDes = "Healthy";
+  	}
+  	else if (getSkin === "stain") {
+    	getSkinDes = "Stain";
+  	}
+  	else if (getSkin === "acne") {
+   		getSkinDes = "Acne";
+  	}
+  	else if (getSkin === "dark_circle") {
+    	getSkinDes = "Bags";
+  	}
   
   if (getEmotion === "disgust") {
     getEmotionDes = "Disgust";
@@ -131,57 +126,45 @@ function renderDetectResult(idString, IMAGE_URL, result) {
 		</div>
 		
 		<div class="face-details">
-	    	<p>Beauty Score</p>
+	    	<h1>Beauty Score</h1>
 	    	<div class="progress" style="height: 40px">
         		<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="${getBeauty}%" aria-valuemin="0" aria-valuemax="100" style="width: ${getBeauty}%">${getBeauty}%</div>
       		</div>
     
       		<div>
 			<div class="face-circle border-warning">
-				<h4 class="face-title">${getGender}</h4>
-				<span class="face-text">Gender</span>
+				<h1 class="face-title">${getGender}</h1>
+				<h1>Gender</h1>
 			</div>
 			<div class="face-circle border-danger">
-				<h4 class="face-title">${getAge}</h4>
-				<span class="face-text">Age</span>
+				<h1 class="face-title">${getAge}</h1>
+				<h1>Age</h1>
 			</div>
 			<div class="face-circle border-info">
-				<h4 class="face-title">${getEthnicity}</h4>
-				<span class="face-text">Race</span>
+				<h1 class="face-title">${getEthnicity}</h1>
+				<h1>Race</h1>
 			</div>
 			</div>
 			<div>
 			<div class="face-circle border-primary">
-				<h4 class="face-title">${getEmotionDes}</h4>
-				<span class="face-text">Emotion</span>
+				<h1 class="face-title">${getEmotionDes}</h1>
+				<h1>Emotion</h1>
 			</div>
 			<div class="face-circle border-success">
-				<h4 class="face-title">${getSkinDes}</h4>
-				<span class="face-text">Skin</span>
+				<h1 class="face-title">${getSkinDes}</h1>
+				<h1>Skin</h1>
 			</div>
 			</div>
 		</div>
 	`;
 }
 
-/*
-			<div class="bs-callout bs-callout-danger">
-       			<h4>Key Expertise</h4>
-        		<ul class="list-group">
-          			<li class="list-group-item"> Lorem ipsum dolor sit amet, ea vel prima adhuc</li>
-        		</ul>
-      		</div>
-      		<div class="bs-callout bs-callout-warning">
-        		<p>Using color to add meaning only provides a visual text hidden with the </p>
-      		</div>
-*/
-
 function renderCompareResult(result) {
 	const getConfidence = Math.round(result.confidence);
 
 	return `
 	  	<div class="face-alike">
-		  <p>Alikeness</p>
+		  <h1>Alikeness</h1>
  			<div class="progress" style="height: 40px">
             	<div id="progress-alike" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="${getConfidence}%" aria-valuemin="0" aria-valuemax="100" style="width: ${getConfidence}%">${getConfidence}%</div>
       		</div>
@@ -232,11 +215,6 @@ function displayLandmarkBox(idString, data) {
 //Displaying face detection data from Face++ API
 //Dimension variables calculated based on original image are updated to reflect displayed (resized) image dimension 
 function displayFaceDetectData(data) {
-
-	//$('#detect-button').tooltip('hide');
-	//$('#compare-button').tooltip('hide');
-
-
   //Calling function for html generation
 	$('.face-detect').html('');
 	$('.face-upload').html('');
@@ -254,22 +232,15 @@ function displayFaceDetectData(data) {
 }
 
 function displayFaceCompareData(data) {
-
-//	$('#detect-button').tooltip('hide');
-//	$('#compare-button').tooltip('hide');
-
-
-//	console.log('Displaying Compare data!');
 	const detectResult = renderDetectResult('compare', COMPARE_IMAGE_URL, data);
 	$('.js-compare-box').html(detectResult);
-//	console.log('Loading Compare Image!');
 	$('#compare-face-img').on('load', event => {
 		console.log('Compare load complete!');
 		displayLandmarkBox('compare', data);
 	});
 
-	$('.js-detect-box').addClass('col-lg-6');
-	$('.js-compare-box').addClass('col-lg-6');
+	//$('.js-detect-box').addClass('col-lg-6');
+	//$('.js-compare-box').addClass('col-lg-6');
 }
 
 function displayFaceCompareResult(data) {
@@ -282,8 +253,8 @@ function displayFaceCompareResult(data) {
 function renderInit() {
 	return `
 		<header class="col-12 text-center mt-20">
-			<h1>How do you look? Let's Face-It :)</h1>
-			<h2>Upload a selfie for analysis!</h2>
+			<h1>How do you look? Let's <a class="text-danger">Face-It</a> :)</h1>
+			<h1>Upload a selfie for analysis!</h1>
 		</header>	
 	`;
 }
@@ -312,15 +283,10 @@ function displayInit() {
 }
 
 //Upload event triggered when user click upload button to input an image URL
-/////////////////////////////////////////////
-/////////////////////////////////////////////
-////////////////////change from submit to click???//////////////////////////////
 function uploadDetect() {
 	$('.detect-img-url').submit(event => {
-//		console.log(`Uploading Detect!`);
 		event.preventDefault();
 		DETECT_IMAGE_URL = $('#detect-url').val();
-//		console.log(DETECT_IMAGE_URL);
 		$('#detect-url').val("");
 		postDetectData(DETECT_IMAGE_URL, displayFaceDetectData);
 		uploadCompare();	
@@ -332,9 +298,8 @@ function restartDetect() {
 	$('#link-home').on('click', event => {
 		DETECT_IMAGE_URL = "";
 		COMPARE_IMAGE_URL = "";
-		$('.js-detect-box').removeClass('col-lg-6');
-		$('.js-compare-box').removeClass('col-lg-6');
-//		console.log(`Restart Clicked!`);
+//		$('.js-detect-box').removeClass('col-lg-6');
+//		$('.js-compare-box').removeClass('col-lg-6');
 		//Reload the page
 		location.reload();
 		//Alternative woring method to reload page
@@ -343,12 +308,9 @@ function restartDetect() {
 }
 
 function uploadCompare() {
-//	console.log(`Checking Compare!`);
 	$('.face-compare').unbind().on('click', '#compare-button', event => {
-//		console.log(`Compare clicked!`);
 		event.preventDefault();
 		COMPARE_IMAGE_URL = $('#compare-url').val();
-//		console.log(COMPARE_IMAGE_URL);
 		$('#compare-url').val("");
 		postDetectData(COMPARE_IMAGE_URL, displayFaceCompareData);
 		postCompareData(displayFaceCompareResult);
@@ -357,7 +319,6 @@ function uploadCompare() {
 }
 
 function initApp() {
-//	console.log(`Starting Fresh!`);
 	displayInit();
 	restartDetect();
 }
