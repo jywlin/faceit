@@ -25,7 +25,10 @@ function postDetectData(IMAGE_URL, callback) {
 	//console.log('Posting Detect Data! '+callback);
 	//console.log('Query '+query.image_url);
 
-	$.post(FACE_PLUS_DETECT_URL, query, callback, "json");
+	$.post(FACE_PLUS_DETECT_URL, query, callback, "json")
+	.fail(() => {
+			alert("Please review the image requirements and provide a valid URL to your image!");
+		});
 }
 
 function postCompareData(callback) {
