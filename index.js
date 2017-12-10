@@ -1,10 +1,8 @@
 const FACE_PLUS_DETECT_URL = "https://api-us.faceplusplus.com/facepp/v3/detect";
 const FACE_PLUS_COMPARE_URL = "https://api-us.faceplusplus.com/facepp/v3/compare";
-
 //const IMAGE_URL = "https://goo.gl/v8Mr1h"; //Beyonce
 //const IMAGE_URL = "https://goo.gl/56QsnY"; //Elon Musk
 //const IMAGE_URL = "http://1.bp.blogspot.com/-hMUpDcPMJUI/Vm75r4udnGI/AAAAAAAARLc/cUm2sWkeODk/s1600/Jennifer%2BLawrence%2Bhunger%2Bgames%2Bprequels%2Btoo%2Bsoon.jpg";
-//const IMAGE_URL = "http://i.dailymail.co.uk/i/pix/2015/10/21/01/016E0FB30000044D-0-image-a-40_1445387689827.jpg" //Yao Ming
 
 var DETECT_IMAGE_URL = "";
 var COMPARE_IMAGE_URL = "";
@@ -23,8 +21,6 @@ function postDetectData(IMAGE_URL, callback) {
 
 	$.post(FACE_PLUS_DETECT_URL, query, callback, "json")
 		.fail(() => {
-			//$('#detect-button').tooltip('show');
-			//$('#compare-button').tooltip('show');
 			alert("Please review the image requirements and provide a valid URL to your image!");
 		});
 }
@@ -85,74 +81,82 @@ function renderDetectResult(idString, IMAGE_URL, result) {
     	getSkinDes = "Bags";
   	}
   
-  if (getEmotion === "disgust") {
-    getEmotionDes = "Disgust";
-  }
-  else if (getEmotion === "anger") {
-    getEmotionDes = "Anger";
-  }
-  else if (getEmotion === "fear") {
-    getEmotionDes = "Fear";
-  }
-  else if (getEmotion === "happiness") {
-    getEmotionDes = "Joy";
-  }
-  else if (getEmotion === "neutral") {
-    getEmotionDes = "Trust";
-  }
-  else if (getEmotion === "sadness") {
-    getEmotionDes = "Sadness";
-  }
-  else if (getEmotion === "surprise") {
-    getEmotionDes = "Surprise";
-  }
+	if (getEmotion === "disgust") {
+    	getEmotionDes = "Disgust";
+  	}
+  	else if (getEmotion === "anger") {
+   		getEmotionDes = "Anger";
+  	}
+  	else if (getEmotion === "fear") {
+    	getEmotionDes = "Fear";
+  	}
+  	else if (getEmotion === "happiness") {
+    	getEmotionDes = "Joy";
+  	}
+  	else if (getEmotion === "neutral") {
+   		getEmotionDes = "Trust";
+  	}
+  	else if (getEmotion === "sadness") {
+    	getEmotionDes = "Sadness";
+  	}
+  	else if (getEmotion === "surprise") {
+    	getEmotionDes = "Surprise";
+  	}
 
 	if (getGender === "Male") {
-	  getBeauty = Math.round(result.faces[0].attributes.beauty.male_score);
+		getBeauty = Math.round(result.faces[0].attributes.beauty.male_score);
 	}
 	else if (getGender === "Female") {
-	  getBeauty = Math.round(result.faces[0].attributes.beauty.female_score);
+		getBeauty = Math.round(result.faces[0].attributes.beauty.female_score);
 	}
 
+	let viewportWidth = 500;
+
+	if (document.documentElement.clientWidth < 500) {
+		viewportWidth = document.documentElement.clientWidth;
+	} 
+
+	const faceDetailsHeight = viewportWidth*0.9;
+
 	return `
-		<div class="handle-img">
+		<div class="col-12 handle-img">
 			<div class="img-box">
 				<span class="helper"></span>
-				<img id="${imgIdString}" src="${IMAGE_URL}" alt="${imgIdString}">
+				<img class="rounded" id="${imgIdString}" src="${IMAGE_URL}" alt="${imgIdString}">
 				<div class="js-${idString}-drawFaceBorder drawFaceBorder">
 					<div class="js-${idString}-landmarkBox landmarkBox"></div>
 				</div>
 			</div>
 		</div>
 		
-		<div class="face-details">
-	    	<h1>Beauty Score</h1>
-	    	<div class="progress" style="height: 40px">
+		<div class="face-details" style="height: ${faceDetailsHeight}px">
+	    	<h6>Beauty Score</h6>
+	    	<div class="progress">
         		<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="${getBeauty}%" aria-valuemin="0" aria-valuemax="100" style="width: ${getBeauty}%">${getBeauty}%</div>
       		</div>
     
       		<div>
 			<div class="face-circle border-warning">
-				<h1 class="face-title">${getGender}</h1>
-				<h1>Gender</h1>
+				<h5 class="face-title">${getGender}</h5>
+				<h5>Gender</h5>
 			</div>
 			<div class="face-circle border-danger">
-				<h1 class="face-title">${getAge}</h1>
-				<h1>Age</h1>
+				<h5 class="face-title">${getAge}</h5>
+				<h5>Age</h5>
 			</div>
 			<div class="face-circle border-info">
-				<h1 class="face-title">${getEthnicity}</h1>
-				<h1>Race</h1>
+				<h5 class="face-title">${getEthnicity}</h5>
+				<h5>Race</h5>
 			</div>
 			</div>
 			<div>
 			<div class="face-circle border-primary">
-				<h1 class="face-title">${getEmotionDes}</h1>
-				<h1>Emotion</h1>
+				<h5 class="face-title">${getEmotionDes}</h5>
+				<h5>Emotion</h5>
 			</div>
 			<div class="face-circle border-success">
-				<h1 class="face-title">${getSkinDes}</h1>
-				<h1>Skin</h1>
+				<h5 class="face-title">${getSkinDes}</h5>
+				<h5>Skin</h5>
 			</div>
 			</div>
 		</div>
@@ -164,8 +168,8 @@ function renderCompareResult(result) {
 
 	return `
 	  	<div class="face-alike">
-		  <h1>Alikeness</h1>
- 			<div class="progress" style="height: 40px">
+		  <h6>Alikeness</h6>
+ 			<div class="progress">
             	<div id="progress-alike" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="${getConfidence}%" aria-valuemin="0" aria-valuemax="100" style="width: ${getConfidence}%">${getConfidence}%</div>
       		</div>
       	</div>
@@ -174,10 +178,9 @@ function renderCompareResult(result) {
 
 function renderCompareUpload() {
 	return `
-		<h2>Upload another pic for comparison!</h2>	
-		<label class="col-12" for="compare-url"></label>	
-		<input class="col-6" type="text" id="compare-url">
-		<button id="compare-button" class="btn btn-danger btn-lg" type="button">URL</button>
+		<p>Upload another pic to compare!</p>	
+		<input class="col-9" type="text" id="compare-url">
+		<button id="compare-button" class="btn btn-outline-danger btn-sm" type="button">URL</button>
 	`;
 }
 
@@ -192,6 +195,9 @@ function displayLandmarkBox(idString, data) {
 	const marginleft = -(width/2);
 	const margintop= -(height/2);
 	var resize_ratio = 1;
+
+	$(`.handle-img`).attr('style', `height:${height}px;`);
+	$(`.img-box`).attr('style', `height:${height}px;`);
 	
 	//Calculate resize ratio for correct positioning of landmarkBox 
 	if (naturalWidth>width) {
@@ -238,9 +244,6 @@ function displayFaceCompareData(data) {
 		console.log('Compare load complete!');
 		displayLandmarkBox('compare', data);
 	});
-
-	//$('.js-detect-box').addClass('col-lg-6');
-	//$('.js-compare-box').addClass('col-lg-6');
 }
 
 function displayFaceCompareResult(data) {
@@ -253,8 +256,8 @@ function displayFaceCompareResult(data) {
 function renderInit() {
 	return `
 		<header class="col-12 text-center mt-20">
-			<h1>How do you look? Let's <a class="text-danger">Face-It</a> :)</h1>
-			<h1>Upload a selfie for analysis!</h1>
+			<h2>How do you look? Let's <a class="text-danger">Face-It</a> :)</h2>
+			<p>Upload a selfie for analysis!</p>
 		</header>	
 	`;
 }
@@ -262,9 +265,8 @@ function renderInit() {
 function renderUpload() {
 	return `
 		<form class="col-12 detect-img-url text-center" action="#">
-			<label class="col-12" for="detect-url"></label>	
-			<input class="col-6" type="text" id="detect-url">
-			<button id="detect-button" class="btn btn-danger btn-lg" type="submit">URL</button>
+			<input class="col-9" type="text" id="detect-url">
+			<button id="detect-button" class="btn btn-outline-danger btn-sm" type="submit">URL</button>
 		</form>	
 	`;
 }
@@ -293,13 +295,10 @@ function uploadDetect() {
 	});
 }
 
-
 function restartDetect() {
 	$('#link-home').on('click', event => {
 		DETECT_IMAGE_URL = "";
 		COMPARE_IMAGE_URL = "";
-//		$('.js-detect-box').removeClass('col-lg-6');
-//		$('.js-compare-box').removeClass('col-lg-6');
 		//Reload the page
 		location.reload();
 		//Alternative woring method to reload page
