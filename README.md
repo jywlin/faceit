@@ -1,5 +1,5 @@
 #	Face-It Thinkful (https://www.thinkful.com/) Capstone1 Portfolio Project
-A responsive app to detect and compare human faces for analysis. 
+A responsive app that makes simultaneous AJAX calls to Open APIs for facial recognition and analysis.
 
 #	Screenshots
 Home Page to Start the App
